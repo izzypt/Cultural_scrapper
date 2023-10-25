@@ -1,19 +1,3 @@
-# aboo_cultural_scrapper
-Trabalho para o aboo gani. Fazer um scrapping da agenda cultural
-
-### Projecto de scraping
-
-O objectivo é criar um program que faça scrape da agenda cultural de Lisboa e outras zonas que foram pedidas pelo cliente.
-
-
-### Agenda cultural de Lisboa (agenda_lx)
-
-Comecei por tentar utilizar o scrappy, no entanto não foi possível porque as páginas são rendered dinamicamente com JavaScript.
-
-Instalei e utilizei o Selenium para fazer o scraping: 
-
-```py
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -82,5 +66,3 @@ for element in elements:
         file.write(f"{categoria},{title},{subtitulo},{start_date},{end_date},{local},{link}\n")
 
 driver.quit()
-
-```
