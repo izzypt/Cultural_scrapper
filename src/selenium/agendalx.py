@@ -7,17 +7,38 @@ from selenium.webdriver.support import expected_conditions as EC
 import selenium.common.exceptions as selenium_exceptions
 from selenium.webdriver.firefox.options import Options
 import time
+import smtplib
+from email.message import EmailMessage
+import ssl
+from os.path import basename
+import os
+from dotenv import load_dotenv
 
+####################
+# LOAD ENVIRONMENT #
+####################
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), '.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+###########################
+# OPEN CSV/ WRITE HEADERS #
+###########################
 FILE_PATH = "agenda_lx.csv"
 with open(FILE_PATH, "w") as file:
     file.write("Categoria,Título,Subtítulo,Inicio,Fim,Local,Link\n")
 
+##################
+# SETUP SELENIUM #
+##################
 options = webdriver.FirefoxOptions()
 options.add_argument('--headless')
 driver = webdriver.Firefox(options=options)
 driver.get("https://www.agendalx.pt/?archive=agenda&categories=artes&categories=musica&categories=teatro&categories=cinema&categories=danca&categories=stand-up-comedy&s=&type=event")
 title = driver.title
 
+##################
+# LOOP ALL PAGES #
+##################
 while True:
     try:
         next_button = WebDriverWait(driver, 25, 2).until(
@@ -30,9 +51,11 @@ while True:
         print("No more 'Next' button available or it's not clickable.\n Finished scraping.")
         break
 
-elements = driver.find_elements(By.CLASS_NAME, 'accordion-list__item')
 
-# Extract the information
+#########################
+# EXTRACT/WRITE TO FILE #
+#########################
+elements = driver.find_elements(By.CLASS_NAME, 'accordion-list__item')
 for element in elements:
     try:
         title = element.find_element(By.CLASS_NAME, 'accordion-list__full-link').get_attribute('title').replace(',', ' - ')
@@ -66,3 +89,24 @@ for element in elements:
         file.write(f"{categoria},{title},{subtitulo},{start_date},{end_date},{local},{link}\n")
 
 driver.quit()
+
+###############
+# SEND EMAIL  #
+###############
+print("CSV pronto. Vamos enviar o e-mail..")
+def send_email():
+    EMAIL_TITLE = 'Automated Report'
+    BODY = 'This e-mail was automatically sent with the latest cultural activities in Lisbon.'
+    em = EmailMessage()
+    em['From'] = os.getenv('SENDER_EMAIL')
+    em['To'] = os.getenv('REC_EMAIL')
+    em['Subject'] = EMAIL_TITLE
+    em.set_content(BODY)
+
+    em.add_attachment(open('agenda_lx.csv', 'rb').read(), maintype='application', subtype='octet-stream', filename=basename('agenda_lx.csv'))
+
+    context = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(os.getenv('SENDER_EMAIL'), os.getenv('PASSWORD'))
+        smtp.sendmail(os.getenv('SENDER_EMAIL'), os.getenv('REC_EMAIL'), em.as_string())
