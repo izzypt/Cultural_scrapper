@@ -5,7 +5,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import selenium.common.exceptions as selenium_exceptions
-from selenium.webdriver.firefox.options import Options
 import time
 import smtplib
 from email.message import EmailMessage
@@ -17,7 +16,7 @@ from dotenv import load_dotenv
 ####################
 # LOAD ENVIRONMENT #
 ####################
-dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), '.env')
+dotenv_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
 load_dotenv(dotenv_path=dotenv_path)
 
 ###########################
@@ -39,14 +38,15 @@ title = driver.title
 ##################
 # LOOP ALL PAGES #
 ##################
+print("Starting scrape...")
 while True:
     try:
-        next_button = WebDriverWait(driver, 25, 2).until(
+        next_button = WebDriverWait(driver, 30, 3).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/main/div/div[2]/div/div[4]/button"))
         )
         next_button.click()
-        print("Clicked on the next button. Loading more data...")
-        time.sleep(2)
+        print("Scrapper loading more data...")
+        time.sleep(1)
     except:
         print("No more 'Next' button available or it's not clickable.\n Finished scraping.")
         break
@@ -84,16 +84,14 @@ for element in elements:
         link = element.find_element(By.CLASS_NAME, 'accordion-list__full-link').get_attribute('href')
     except:
         link = "N/A"
-    print("A escrever para o CSV...")
     with open(FILE_PATH, "a") as file:
         file.write(f"{categoria},{title},{subtitulo},{start_date},{end_date},{local},{link}\n")
-
+print("CSV pronto. Vamos enviar o e-mail..")
 driver.quit()
 
-###############
-# SEND EMAIL  #
-###############
-print("CSV pronto. Vamos enviar o e-mail..")
+##############
+# SEND EMAIL #
+##############
 def send_email():
     EMAIL_TITLE = 'Automated Report'
     BODY = 'This e-mail was automatically sent with the latest cultural activities in Lisbon.'
@@ -110,3 +108,5 @@ def send_email():
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
         smtp.login(os.getenv('SENDER_EMAIL'), os.getenv('PASSWORD'))
         smtp.sendmail(os.getenv('SENDER_EMAIL'), os.getenv('REC_EMAIL'), em.as_string())
+    print(f"E-mail enviado para {os.getenv('REC_EMAIL')} com as últimas novidades da agenda cultural.")
+send_email()
