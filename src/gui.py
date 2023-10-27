@@ -1,9 +1,11 @@
 import customtkinter as tk
+from tkinter import messagebox
 import tkinter
 from tkinter import PhotoImage
 import os
-from utils import start_scripts
+from utils import start_scripts, is_valid_email
 from dotenv import load_dotenv
+import threading
 
 ############
 # LOAD ENV #
@@ -16,25 +18,6 @@ load_dotenv(dotenv_path=dotenv_path)
 #########################
 tk.set_appearance_mode('System')
 tk.set_default_color_theme("blue")
-
-#####################
-# HANDLER FUNCTIONS #
-#####################
-def start_scrape():
-    rec_email = email_recipient.get()
-    os.environ["REC_EMAIL"] = rec_email
-    progress_bar.pack(padx=10, pady=10)
-    progress_bar.start()
-    finished_scripts = start_scripts(os.environ["REC_EMAIL"])
-    if finished_scripts:
-        finish_scrape()
-
-def finish_scrape():
-    progress_bar.stop()
-    progress_bar.pack_forget()
-    button.pack_forget()
-    final_message = tk.CTkLabel(app, text="Scrapping finished. Close the program.")
-    final_message.pack(padx=10, pady=10)
 
 ###########
 # INIT TK #
@@ -56,7 +39,37 @@ email.pack()
 
 progress_bar = tk.CTkProgressBar(app, width=400, mode='indeterminate')
 
+#####################
+# HANDLER FUNCTIONS #
+#####################
+def put_progress_bar():
+    progress_bar.pack(padx=10, pady=10)
+    progress_bar.start()
+
+def start_scrape():
+    rec_email = email_recipient.get()
+    if is_valid_email(rec_email):
+        os.environ["REC_EMAIL"] = rec_email
+        put_progress_bar()
+        scraping_thread = threading.Thread(target=scrape_background)
+        scraping_thread.start()
+    else:
+        messagebox.showerror("Invalid email address", "Please enter a valid email address")
+
+def scrape_background():
+    print("Started scrap thread..")
+    finished_scripts = start_scripts(os.environ["REC_EMAIL"])
+    if finished_scripts:
+        progress_bar.stop()
+        progress_bar.pack_forget()
+        button.pack_forget()
+        final_message = tk.CTkLabel(app, text="Scrapping finished. Close the program.")
+        final_message.pack(padx=10, pady=10)
+
+
 button = tk.CTkButton(app, text="Start", command=start_scrape)
 button.pack(padx=10, pady=10)
+
+
 
 app.mainloop()
