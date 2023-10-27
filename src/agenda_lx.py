@@ -1,3 +1,6 @@
+import os
+import time
+from utils import send_email
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -5,12 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import selenium.common.exceptions as selenium_exceptions
-import time
-import smtplib
-from email.message import EmailMessage
-import ssl
 from os.path import basename
-import os
 from dotenv import load_dotenv
 
 ####################
@@ -92,21 +90,4 @@ driver.quit()
 ##############
 # SEND EMAIL #
 ##############
-def send_email():
-    EMAIL_TITLE = 'Automated Report'
-    BODY = 'This e-mail was automatically sent with the latest cultural activities in Lisbon.'
-    em = EmailMessage()
-    em['From'] = os.getenv('SENDER_EMAIL')
-    em['To'] = os.getenv('REC_EMAIL')
-    em['Subject'] = EMAIL_TITLE
-    em.set_content(BODY)
-
-    em.add_attachment(open('agenda_lx.csv', 'rb').read(), maintype='application', subtype='octet-stream', filename=basename('agenda_lx.csv'))
-
-    context = ssl.create_default_context()
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        smtp.login(os.getenv('SENDER_EMAIL'), os.getenv('PASSWORD'))
-        smtp.sendmail(os.getenv('SENDER_EMAIL'), os.getenv('REC_EMAIL'), em.as_string())
-    print(f"E-mail enviado para {os.getenv('REC_EMAIL')} com as últimas novidades da agenda cultural.")
 send_email()
