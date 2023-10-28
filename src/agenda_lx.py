@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    agenda_lx.py                                       :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/10/28 18:45:34 by simao             #+#    #+#              #
+#    Updated: 2023/10/28 22:27:54 by simao            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 import os
 import time
 from utils import send_email
@@ -8,7 +20,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import selenium.common.exceptions as selenium_exceptions
-from os.path import basename
 from dotenv import load_dotenv
 
 ####################
