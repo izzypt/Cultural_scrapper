@@ -6,7 +6,7 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:40 by simao             #+#    #+#              #
-#    Updated: 2023/10/29 14:29:46 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 15:20:11 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,10 @@ class CascaisSpider(scrapy.Spider):
         print("Parse da agenda de Cascais...")
         categoria = response.css('.search-results-text::text').get()
         for event in response.css('.result-row.col-sm-4.image-sub-title'):
-            titulo = event.css('div.field-sub-title::text').get().replace(',', '|')
-            data = event.css('::attr(data-filter-title)').get()
+            titulo = event.css('::attr(data-filter-title)').get().replace(',','')
+            data = str(event.css('div.field-sub-title::text').get())
+            data_inicial = data.split('-')[0] if len(data.split(' - ')) == 2 else 'N/A'
+            data_final = data.split('-')[1] if len(data.split(' - ')) == 2 else data
             local = "Cascais"
             link = event.css('a.cover-link::attr(href)').get()
             yield {
@@ -42,7 +44,7 @@ class CascaisSpider(scrapy.Spider):
                 "Link": link.strip if link else 'N/A',
             }
             with open(os.getenv('OUTPUT_FILE'), "a") as file:
-                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,{data.strip() if data else 'N/A'},N/A,{local},{link}\n")
+                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},{data_inicial},{data_final.strip() if data else 'N/A'},N/A,{local},{link}\n")
         next_page = response.css('li.next a::attr("href")').get()
         if next_page is not None:
             yield response.follow(next_page, self.parse)
