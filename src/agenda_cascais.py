@@ -6,7 +6,7 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:40 by simao             #+#    #+#              #
-#    Updated: 2023/10/29 15:20:11 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 15:50:17 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ class CascaisSpider(scrapy.Spider):
                 "Link": link.strip if link else 'N/A',
             }
             with open(os.getenv('OUTPUT_FILE'), "a") as file:
-                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},{data_inicial},{data_final.strip() if data else 'N/A'},N/A,{local},{link}\n")
+                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,{data_inicial},{data_final.strip() if data else 'N/A'},{local},{link}\n")
         next_page = response.css('li.next a::attr("href")').get()
         if next_page is not None:
             yield response.follow(next_page, self.parse)
