@@ -38,7 +38,7 @@ email = tk.CTkEntry(app, width=350, height=40, textvariable=email_recipient)
 email.pack()
 
 progress_bar = tk.CTkProgressBar(app, width=400, mode='indeterminate')
-loading_message = tk.CTkLabel(app, text="Por favor espera enquanto o program faz scraping.")
+loading_message = tk.CTkLabel(app, text="Por favor espera enquanto o program faz scraping...")
 
 #####################
 # HANDLER FUNCTIONS #
@@ -54,8 +54,11 @@ def start_scrape():
     if is_valid_email(rec_email):
         os.environ["REC_EMAIL"] = rec_email
         put_progress_bar()
-        scraping_thread = threading.Thread(target=scrape_background)
-        scraping_thread.start()
+        try:
+            scraping_thread = threading.Thread(target=scrape_background)
+            scraping_thread.start()
+        except:
+            messagebox.showerror("Couldn't scrape. Something went wrong when running the scripts.")
     else:
         messagebox.showerror("Invalid email address", "Please enter a valid email address")
 
@@ -69,6 +72,7 @@ def scrape_background():
         final_message = tk.CTkLabel(app, text="Scrapping concluido!\nPodes fechar o programa.")
         final_message.pack(padx=10, pady=10)
         send_email()
+        messagebox.showinfo(title="Scraping terminado", message="O programa terminou de correr.\nPodes fechar")
 
 button = tk.CTkButton(app, text="Start", command=start_scrape)
 button.pack(padx=10, pady=10)

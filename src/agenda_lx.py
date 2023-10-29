@@ -6,7 +6,7 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:34 by simao             #+#    #+#              #
-#    Updated: 2023/10/28 23:16:36 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 13:44:01 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,7 @@ load_dotenv(dotenv_path=dotenv_path)
 ###########################
 # OPEN CSV/ WRITE HEADERS #
 ###########################
-FILE_PATH = "agenda_cultural.csv"
-with open(FILE_PATH, "w") as file:
+with open(os.getenv('OUTPUT_FILE'), "w") as file:
     file.write("Categoria,Título,Subtítulo,Inicio,Fim,Local,Link\n")
 
 ##################
@@ -92,6 +91,6 @@ for element in elements:
         link = element.find_element(By.CLASS_NAME, 'accordion-list__full-link').get_attribute('href')
     except:
         link = "N/A"
-    with open(FILE_PATH, "a") as file:
+    with open(os.getenv('OUTPUT_FILE'), "a") as file:
         file.write(f"{categoria},{title},{subtitulo},{start_date},{end_date},{local},{link}\n")
 driver.quit()

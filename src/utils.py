@@ -15,9 +15,13 @@ def start_scripts(email):
         process.wait()
         process2 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_torres.py"])
         process2.wait()
+        process3 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_sintra.py"])
+        process3.wait()
+        process4 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_cascais.py"])
+        process4.wait()
     except subprocess.CalledProcessError as e:
         print(f"Failed to run the script: {e}")
-        return False
+        return Exception("Something went wrong when running the scraping scripts...")
     return True
 
 def is_valid_email(email):
@@ -32,7 +36,7 @@ def send_email():
     em['Subject'] = EMAIL_TITLE
     em.set_content(BODY)
 
-    em.add_attachment(open('agenda_cultural.csv', 'rb').read(), maintype='application', subtype='octet-stream', filename=basename('agenda_lx.csv'))
+    em.add_attachment(open(os.getenv('OUTPUT_FILE'), 'rb').read(), maintype='application', subtype='octet-stream', filename=basename(os.getenv('OUTPUT_FILE')))
 
     context = ssl.create_default_context()
 

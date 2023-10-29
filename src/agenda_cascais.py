@@ -6,11 +6,16 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:40 by simao             #+#    #+#              #
-#    Updated: 2023/10/28 22:28:37 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 14:29:46 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+import os
 import scrapy
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
+load_dotenv(dotenv_path=dotenv_path)
 
 class CascaisSpider(scrapy.Spider):
     name = "agenda_cascais"
@@ -22,16 +27,22 @@ class CascaisSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
+        print("Parse da agenda de Cascais...")
         categoria = response.css('.search-results-text::text').get()
         for event in response.css('.result-row.col-sm-4.image-sub-title'):
+            titulo = event.css('div.field-sub-title::text').get().replace(',', '|')
+            data = event.css('::attr(data-filter-title)').get()
+            local = "Cascais"
+            link = event.css('a.cover-link::attr(href)').get()
             yield {
-                "Categoria": categoria,
-                "Titulo": event.css('div.field-sub-title::text').get().strip(),
-                "Data": event.css('::attr(data-filter-title)').get().strip(),
-                "Local" : "Cascais",
-                "Link": event.css('a.cover-link::attr(href)').get(),
+                "Categoria": categoria.strip() if categoria else 'N/A',
+                "Titulo": titulo.strip() if titulo else 'N/A',
+                "Data": data.strip() if data else 'N/A',
+                "Local" : local,
+                "Link": link.strip if link else 'N/A',
             }
-
+            with open(os.getenv('OUTPUT_FILE'), "a") as file:
+                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,{data.strip() if data else 'N/A'},N/A,{local},{link}\n")
         next_page = response.css('li.next a::attr("href")').get()
         if next_page is not None:
             yield response.follow(next_page, self.parse)

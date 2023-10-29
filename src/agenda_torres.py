@@ -6,13 +6,16 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:21 by simao             #+#    #+#              #
-#    Updated: 2023/10/28 23:53:25 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 14:29:58 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+import os
 import scrapy
+from dotenv import load_dotenv
 
-FILE_PATH = "agenda_cultural.csv"
+dotenv_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
+load_dotenv(dotenv_path=dotenv_path)
 
 class SintraSpider(scrapy.Spider):
     name = "agenda_torres"
@@ -27,19 +30,17 @@ class SintraSpider(scrapy.Spider):
         eventos = response.css('div.listagem-eventos')
         for evento in eventos:
             categoria = evento.css('div.categoria-evento::text').get()
-            titulo = evento.css('span.coluna-titulo::text').get()
-            local = "Torres Vedras",
+            titulo = evento.css('span.coluna-titulo::text').get().replace(',', '|')
             data = evento.css('span.data::text').get()
             link = "https://teatrocine-tvedras.pt" + evento.css('div a::attr(href)').get()
             yield {
                 "Categoria": categoria.strip() if categoria else None,
                 "Titulo": titulo.strip() if titulo else None,
                 "Data": data.strip() if data else None,
-                "Local": local,
                 "Link": link,
             }
-            with open(FILE_PATH, "a") as file:
-                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,{data.strip() if data else 'N/A'},N/A,{local},{link}\n")
+            with open(os.getenv('OUTPUT_FILE'), "a") as file:
+                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,N/A,{data.strip() if data else 'N/A'},Torres Vedras,{link}\n")
 
         next_page = response.css('a[rel="next"]::attr(href)').get()
         if next_page is not None:
