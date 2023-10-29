@@ -13,8 +13,10 @@ def start_scripts(email):
     try:
         process = subprocess.Popen(["python3", "agenda_lx.py"])
         process.wait()
+        process2 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_torres.py"])
+        process2.wait()
     except subprocess.CalledProcessError as e:
-        print(f"Failed to run the script agendalx.py: {e}")
+        print(f"Failed to run the script: {e}")
         return False
     return True
 

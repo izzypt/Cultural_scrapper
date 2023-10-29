@@ -6,13 +6,12 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:34 by simao             #+#    #+#              #
-#    Updated: 2023/10/28 22:27:54 by simao            ###   ########.fr        #
+#    Updated: 2023/10/28 23:16:36 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import time
-from utils import send_email
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -31,7 +30,7 @@ load_dotenv(dotenv_path=dotenv_path)
 ###########################
 # OPEN CSV/ WRITE HEADERS #
 ###########################
-FILE_PATH = "agenda_lx.csv"
+FILE_PATH = "agenda_cultural.csv"
 with open(FILE_PATH, "w") as file:
     file.write("Categoria,Título,Subtítulo,Inicio,Fim,Local,Link\n")
 
@@ -47,7 +46,7 @@ title = driver.title
 ##################
 # LOOP ALL PAGES #
 ##################
-print("Starting scrape...")
+print("Starting scrape da agenda lx...")
 while True:
     try:
         next_button = WebDriverWait(driver, 30, 3).until(
@@ -95,10 +94,4 @@ for element in elements:
         link = "N/A"
     with open(FILE_PATH, "a") as file:
         file.write(f"{categoria},{title},{subtitulo},{start_date},{end_date},{local},{link}\n")
-print("CSV pronto. Vamos enviar o e-mail..")
 driver.quit()
-
-##############
-# SEND EMAIL #
-##############
-send_email()
