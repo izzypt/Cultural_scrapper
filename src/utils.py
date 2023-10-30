@@ -90,8 +90,10 @@ def mes_EN_to_PT(str):
 
 def add_current_year(input_str):
     current_year = str(datetime.now().year)
+    last_year = str(datetime.now().year - 1)
+    next_year = str(datetime.now().year + 1)
 
-    if input_str.find(current_year) == -1 and input_str != 'N/A':
+    if (input_str.find(current_year) == -1 or input_str.find(last_year) == -1 or input_str.find(next_year) == -1) and input_str != 'N/A':
         input_str += " " + current_year
 
     return input_str
