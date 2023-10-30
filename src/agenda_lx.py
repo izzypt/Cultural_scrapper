@@ -6,12 +6,13 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:34 by simao             #+#    #+#              #
-#    Updated: 2023/10/29 13:44:01 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 23:53:48 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import time
+from utils import mes_EN_to_PT, add_current_year, output_file
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -30,7 +31,7 @@ load_dotenv(dotenv_path=dotenv_path)
 ###########################
 # OPEN CSV/ WRITE HEADERS #
 ###########################
-with open(os.getenv('OUTPUT_FILE'), "w") as file:
+with open(output_file(), "w") as file:
     file.write("Categoria,Título,Subtítulo,Inicio,Fim,Local,Link\n")
 
 ##################
@@ -48,7 +49,7 @@ title = driver.title
 print("Starting scrape da agenda lx...")
 while True:
     try:
-        next_button = WebDriverWait(driver, 30, 3).until(
+        next_button = WebDriverWait(driver, 25, 2).until(
             EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/main/div/div[2]/div/div[4]/button"))
         )
         next_button.click()
@@ -78,9 +79,15 @@ for element in elements:
         categoria = "N/A"
     try:
         date = element.find_element(By.CLASS_NAME, 'signpost__date').text.replace(',', ' - ')
-        start_date = date.split(' a ')[0] if len(date.split(' a ')) == 2 else date
-        end_date = date.split(' a ')[1] if len(date.split(' a ')) == 2 else date
-    except:
+        date_split = date.split(' a ')
+        start_date = date_split[0] if len(date_split) >= 2 else 'N/A'
+        end_date = date_split[1] if len(date_split) >= 2 else date
+        if (len(start_date.split(' ')) < 2):
+            start_date = 'N/A'
+        start_date = add_current_year(mes_EN_to_PT(start_date))
+        end_date = mes_EN_to_PT(end_date)
+    except Exception as e:
+        print(e)
         start_date = "N/A"
         end_date = "NA"
     try:
@@ -91,6 +98,6 @@ for element in elements:
         link = element.find_element(By.CLASS_NAME, 'accordion-list__full-link').get_attribute('href')
     except:
         link = "N/A"
-    with open(os.getenv('OUTPUT_FILE'), "a") as file:
+    with open(output_file(), "a") as file:
         file.write(f"{categoria},{title},{subtitulo},{start_date},{end_date},{local},{link}\n")
 driver.quit()

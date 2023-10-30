@@ -6,12 +6,13 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:27 by simao             #+#    #+#              #
-#    Updated: 2023/10/29 14:29:54 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 22:55:29 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import scrapy
+from utils import output_file
 from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
@@ -42,7 +43,7 @@ class SintraSpider(scrapy.Spider):
                 "Local": local.strip() if local else None,
                 "Link": ("https://ccolgacadaval.pt" + link) if link else None,
             }
-            with open(os.getenv('OUTPUT_FILE'), "a") as file:
+            with open(output_file(), "a") as file:
                 file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,N/A,{data.strip() if data else 'N/A'},{local.strip() if local else 'N/A'},{('https://ccolgacadaval.pt' + link) if link else 'N/A'}\n")
         next_page = response.css('a[rel="next"]::attr(href)').get()
         if next_page is not None:

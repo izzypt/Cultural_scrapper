@@ -6,12 +6,13 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:21 by simao             #+#    #+#              #
-#    Updated: 2023/10/29 14:29:58 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 23:59:33 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import scrapy
+from utils import output_file, add_current_year
 from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
@@ -39,8 +40,8 @@ class SintraSpider(scrapy.Spider):
                 "Data": data.strip() if data else None,
                 "Link": link,
             }
-            with open(os.getenv('OUTPUT_FILE'), "a") as file:
-                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,N/A,{data.strip() if data else 'N/A'},Torres Vedras,{link}\n")
+            with open(output_file(), "a") as file:
+                file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,N/A,{add_current_year(data.strip()) if data else 'N/A'},Torres Vedras,{link}\n")
 
         next_page = response.css('a[rel="next"]::attr(href)').get()
         if next_page is not None:

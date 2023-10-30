@@ -6,12 +6,13 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:40 by simao             #+#    #+#              #
-#    Updated: 2023/10/29 15:50:17 by simao            ###   ########.fr        #
+#    Updated: 2023/10/29 23:12:20 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import scrapy
+from utils import output_file
 from dotenv import load_dotenv
 
 dotenv_path = os.path.join(os.path.dirname(os.getcwd()), '.env')
@@ -31,7 +32,7 @@ class CascaisSpider(scrapy.Spider):
         categoria = response.css('.search-results-text::text').get()
         for event in response.css('.result-row.col-sm-4.image-sub-title'):
             titulo = event.css('::attr(data-filter-title)').get().replace(',','')
-            data = str(event.css('div.field-sub-title::text').get())
+            data = str(event.css('div.field-sub-title::text').get()).replace("'"," ")
             data_inicial = data.split('-')[0] if len(data.split(' - ')) == 2 else 'N/A'
             data_final = data.split('-')[1] if len(data.split(' - ')) == 2 else data
             local = "Cascais"
@@ -41,9 +42,9 @@ class CascaisSpider(scrapy.Spider):
                 "Titulo": titulo.strip() if titulo else 'N/A',
                 "Data": data.strip() if data else 'N/A',
                 "Local" : local,
-                "Link": link.strip if link else 'N/A',
+                "Link": link.strip() if link else 'N/A',
             }
-            with open(os.getenv('OUTPUT_FILE'), "a") as file:
+            with open(output_file(), "a") as file:
                 file.write(f"{categoria.strip() if categoria else 'N/A'},{titulo.strip() if titulo else 'N/A'},N/A,{data_inicial},{data_final.strip() if data else 'N/A'},{local},{link}\n")
         next_page = response.css('li.next a::attr("href")').get()
         if next_page is not None:
