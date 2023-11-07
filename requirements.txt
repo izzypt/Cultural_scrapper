@@ -59,7 +59,6 @@ matplotlib==3.1.2
 monotonic==1.5
 more-itertools==4.2.0
 netifaces==0.10.4
-norminette==3.3.54
 numpy==1.17.4
 oauthlib==3.1.0
 olefile==0.46
@@ -117,8 +116,6 @@ trio==0.22.2
 trio-websocket==0.11.1
 Twisted==22.10.0
 typing_extensions==4.8.0
-ubuntu-advantage-tools==8001
-ubuntu-drivers-common==0.0.0
 ufw==0.36
 unattended-upgrades==0.1
 urllib3==2.0.7

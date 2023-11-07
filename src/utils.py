@@ -93,10 +93,17 @@ def add_current_year(input_str):
     last_year = str(datetime.now().year - 1)
     next_year = str(datetime.now().year + 1)
 
-    if (input_str.find(current_year) == -1 or input_str.find(last_year) == -1 or input_str.find(next_year) == -1) and input_str != 'N/A':
+    if (input_str.find(current_year) == -1 and input_str.find(last_year) == -1 and input_str.find(next_year) == -1) and input_str != 'N/A':
         input_str += " " + current_year
 
     return input_str
+
+def add_month_and_year(data_inicial, data_final):
+    if (len(data_inicial.strip().split(' ')) == 1):
+        mes = data_final.split(' ')[2]
+        ano = data_final.split(' ')[3]
+        return data_inicial + " " + mes + " " + ano
+    return data_inicial
 
 def output_file():
     day = str(datetime.now().day)
