@@ -6,7 +6,7 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:21 by simao             #+#    #+#              #
-#    Updated: 2023/11/09 20:22:46 by simao            ###   ########.fr        #
+#    Updated: 2023/11/11 00:26:23 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,6 @@ class AgendaLXSpider(scrapy.Spider):
     ]
    
     def parse(self, response):
-        i = 0
         print("Parse da agenda de Lisboa...")
         with open(output_file(), "w") as file:
             file.write("Categoria,Título,Subtítulo,Inicio,Fim,Local,Link\n")
@@ -51,9 +50,6 @@ class AgendaLXSpider(scrapy.Spider):
                 
                 with open(output_file(), "a") as file:
                     data_line = f"{categoria},{titulo},{subtitle},{StartDate},{LastDate},{local},{link}\n"
-                    i += 1
-                    print(len(response.json()))
-                    print(i)  # Add this line for debugging
                     file.write(data_line)
             except Exception as e:
                 print(f"Error writing data to file: {str(e)}")

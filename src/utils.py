@@ -40,7 +40,7 @@ meses_em_ingles = {
 def start_scripts(email):
     print(f"We will start scraping and send email to {email}!!!")
     try:
-        process = subprocess.Popen(["python3", "agenda_lx.py"])
+        process = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_lx.py"])
         process.wait()
         process2 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_torres.py"])
         process2.wait()
@@ -48,6 +48,8 @@ def start_scripts(email):
         process3.wait()
         process4 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_cascais.py"])
         process4.wait()
+        process5 = subprocess.Popen(["scrapy", "runspider", "--nolog", "agenda_mafra.py"])
+        process5.wait()
     except subprocess.CalledProcessError as e:
         print(f"Failed to run the script: {e}")
         return Exception("Something went wrong when running the scraping scripts...")
