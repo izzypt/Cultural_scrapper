@@ -6,7 +6,7 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:21 by simao             #+#    #+#              #
-#    Updated: 2023/11/11 01:10:40 by simao            ###   ########.fr        #
+#    Updated: 2023/11/12 18:43:30 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,14 +33,14 @@ class MafraSpider(scrapy.Spider):
             dates = event.css('div.dates.widget_field div.widget_value span::text').extract()
             dates_split = ' '.join(dates).split(' a ')
             initialDate = dates_split[0] if dates_split[0] else 'N/A'
-            finalDate = dates_split[1] if len(dates_split) > 1 else 'N/A'
+            finalDate = dates_split[1] if len(dates_split) > 1 else initialDate
             title = event.css('div.title.widget_field h2::text').extract_first().replace(',', '-')
             categoria = event.css('div.categories.widget_field div.widget_value span::text').extract()
             link = event.css('a::attr(href)').extract_first() or 'N/A'
 
             categoria = categoria[0] if categoria[-1] not in ['Música', 'Teatro & Espetáculos'] else categoria[-1]
             with open(output_file(), "a") as file:
-                file.write(f"{categoria if categoria else 'N/A'},{title if title else 'N/A'},N/A,{add_current_year(initialDate)},{add_current_year(finalDate)},Mafra,{'https://www.cm-mafra.pt' + link if link else 'N/A'}\n")
+                file.write(f"{categoria if categoria else 'N/A'},{title if title else 'N/A'},N/A,{'N/A' if initialDate == finalDate else add_current_year(initialDate)},{add_current_year(finalDate)},Mafra,{'https://www.cm-mafra.pt' + link if link else 'N/A'}\n")
         # Pagination
         next_page = response.css('div.pagination a[rel="next"]::attr(href)').get()
         if next_page:

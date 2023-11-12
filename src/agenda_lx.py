@@ -6,7 +6,7 @@
 #    By: simao <simao@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 18:45:21 by simao             #+#    #+#              #
-#    Updated: 2023/11/11 00:26:23 by simao            ###   ########.fr        #
+#    Updated: 2023/11/12 18:04:26 by simao            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,14 +34,14 @@ class AgendaLXSpider(scrapy.Spider):
             file.write(json.dumps(response.json(), indent=4))
         for event in data:
             try:
-                titulo = event.get('title', {}).get('rendered', None)
-                subtitle = event.get('subtitle', [])[0] if event.get('subtitle') else None
-                categoria  = event.get('subject', None)
+                titulo = event.get('title', {}).get('rendered', 'N/A')
+                subtitle = event.get('subtitle', [])[0] if event.get('subtitle') else 'N/A'
+                categoria  = event.get('subject', 'N/A')
                 venue = event.get('venue', {})
-                local = list(venue.values())[0].get('name', None) if venue and isinstance(venue, dict) else None
-                link = event.get('link', None)
-                StartDate = event.get('StartDate', None)
-                LastDate = event.get('LastDate', None)
+                local = list(venue.values())[0].get('name', 'N/A') if venue and isinstance(venue, dict) else 'N/A'
+                link = event.get('link', 'N/A')
+                StartDate = event.get('StartDate', 'N/A')
+                LastDate = event.get('LastDate', 'N/A')
                 # Remove commas if any are present
                 categoria = categoria.replace(',', '-') if categoria else categoria
                 titulo = titulo.replace(',', '-') if titulo else titulo
