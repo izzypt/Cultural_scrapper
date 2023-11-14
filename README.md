@@ -1,7 +1,8 @@
 # Cultural_scrapper
 
 
-![agenda_cultural](https://github.com/izzypt/Cultural_scrapper/assets/73948790/c5a2eb65-73da-4b68-907a-ac16ae354bc8)
+![agenda_cultural](https://github.com/izzypt/Cultural_scrapper/assets/73948790/f36dc4f6-5b77-43eb-aec3-087260fa5160)
+
 
 ### Projecto de scraping
 
@@ -15,4 +16,5 @@ Condensar e compilar a informação num CSV/Excell file.
 
 Program should output and send to your email the results:
 
-![image](https://github.com/izzypt/Cultural_scrapper/assets/73948790/249634d9-9693-4327-ab90-afee3a133a4e)
+![image](https://github.com/izzypt/Cultural_scrapper/assets/73948790/9a8f440d-f5f9-4cd3-990e-5d8e5e81959d)
+
