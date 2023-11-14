@@ -6,9 +6,9 @@
 
 ### Projecto de scraping
 
-O objectivo é criar um program que faça scrape da agenda cultural de Lisboa, Cascais, Sintra, Torres Vedras.. e outras zonas que foram pedidas pelo utilizador. 
+The goal is to create a program that scrapes the web for cultural events of Lisboa, Cascais, Sintra, Torres Vedras, Mafra...  and other areas if requestes by the user.
 
-Condensar e compilar a informação num CSV/Excell file.
+This data should be cleaned and compiled into a CSV file and sent to a destination email.
 
 
 ![image](https://github.com/izzypt/Cultural_scrapper/assets/73948790/337a414f-81ae-4197-887f-f447cdec3998)
